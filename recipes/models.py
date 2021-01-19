@@ -31,7 +31,7 @@ class Recipe(models.Model):
         through='IngredientAmount',
         related_name='recipes')
     tag = models.CharField(choices=TAG_CHOICES, max_length=300)
-    time = models.TimeField(auto_now=False, auto_now_add=False)
+    time = models.DurationField()
     slug = models.SlugField(unique=True)
 
 
@@ -52,3 +52,35 @@ class IngredientAmount(models.Model):
         related_name='ingredient_amounts'
     )
     quantity = models.FloatField()
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="follower"
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="following"
+    )
+
+    class Meta:
+        unique_together = ('user', 'author')
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorited'
+    )
+
+    class Meta:
+        unique_together = ('user', 'recipe')
