@@ -7,17 +7,27 @@ User = get_user_model()
 class Ingredient(models.Model):
     ingredient = models.TextField()
 
+    def __str__(self):
+            return self.ingredient
+
 
 class Unit(models.Model):
     unit = models.TextField()
 
+    def __str__(self):
+            return self.unit
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+    color = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True, max_length=50)
+
+    def __str__(self):
+            return self.name
+
 
 class Recipe(models.Model):
-    TAG_CHOICES = [
-        ('breakfast', 'завтрак'),
-        ('lunch', 'обед'),
-        ('dinner', 'ужин'),
-    ]
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -30,9 +40,14 @@ class Recipe(models.Model):
         Ingredient,
         through='IngredientAmount',
         related_name='recipes')
-    tag = models.CharField(choices=TAG_CHOICES, max_length=300)
+    tag = models.ManyToManyField(
+        Tag,
+        related_name='recipes')
     time = models.DurationField()
     slug = models.SlugField(unique=True)
+
+    def __str__(self):
+            return self.name
 
 
 class IngredientAmount(models.Model):
@@ -52,6 +67,9 @@ class IngredientAmount(models.Model):
         related_name='ingredient_amounts'
     )
     quantity = models.FloatField()
+
+    class Meta:
+        unique_together = ('recipe', 'ingredient')
 
 
 class Follow(models.Model):
