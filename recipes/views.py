@@ -11,8 +11,12 @@ def create_paginator(request, recipes):
     page = paginator.get_page(page_number)
     return (paginator, page)
 
+
 def index(request):
-    recipes = Recipe.objects.all()
+    if request.method == 'GET' and 'tag' in request.GET:
+        recipes = Recipe.objects.filter(tag__slug=request.GET['tag'])
+    else:
+        recipes = Recipe.objects.all()
     tags = Tag.objects.all()
     paginator, page = create_paginator(request, recipes)
     return render(request, "index.html", {
