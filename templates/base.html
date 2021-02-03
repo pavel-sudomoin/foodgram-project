@@ -7,11 +7,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Foodgram{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+    {% block styles %}{% endblock %}
 </head>
 
-<body>
+<body class="body">
     {% include 'include/header.html' %}
     <main class="main container">
         {% block content %}
