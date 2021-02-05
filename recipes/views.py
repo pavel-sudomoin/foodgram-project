@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 
 from .models import Recipe, Tag
@@ -23,4 +23,11 @@ def index(request):
         "page": page,
         "paginator": paginator,
         'tags': tags,
+    })
+
+
+def recipe_view(request, recipe_slug):
+    recipe = get_object_or_404(Recipe, slug=recipe_slug)
+    return render(request, "recipe.html", {
+        "recipe": recipe
     })

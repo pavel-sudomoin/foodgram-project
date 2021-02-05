@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="main_page"),
+    path("<str:recipe_slug>/", views.recipe_view, name="recipe"),
 #    path("follow/", views.follow_index, name="follow_index"),
 #    path("group/<slug:slug>/", views.group_posts, name="group_posts"),
 #    path("new/", views.new_post, name="new_post"),
