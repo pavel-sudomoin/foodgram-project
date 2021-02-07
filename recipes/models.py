@@ -33,7 +33,7 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes'
     )
-    name = models.TextField()
+    name = models.CharField(max_length=50)
     image = models.ImageField(upload_to="recipes/", blank=True, null=True)
     description = models.TextField()
     ingredient = models.ManyToManyField(
