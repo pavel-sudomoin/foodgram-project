@@ -1,21 +1,15 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.utils.text import slugify
 User = get_user_model()
 
 
 class Ingredient(models.Model):
-    ingredient = models.TextField()
+    name = models.CharField(max_length=200)
+    unit = models.CharField(max_length=50)
 
     def __str__(self):
-            return self.ingredient
-
-
-class Unit(models.Model):
-    unit = models.TextField()
-
-    def __str__(self):
-            return self.unit
+            return self.name
 
 
 class Tag(models.Model):
@@ -39,12 +33,17 @@ class Recipe(models.Model):
     ingredient = models.ManyToManyField(
         Ingredient,
         through='IngredientAmount',
-        related_name='recipes')
+        related_name='recipes',
+        blank=True)
     tag = models.ManyToManyField(
         Tag,
         related_name='recipes')
     time = models.DurationField()
     slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Recipe, self).save(*args, **kwargs)
 
     def __str__(self):
             return self.name
@@ -61,15 +60,14 @@ class IngredientAmount(models.Model):
         on_delete=models.PROTECT,
         related_name='ingredient_amounts'
     )
-    unit = models.ForeignKey(
-        Unit,
-        on_delete=models.PROTECT,
-        related_name='ingredient_amounts'
-    )
     quantity = models.FloatField()
 
     class Meta:
         unique_together = ('recipe', 'ingredient')
+
+    def save(self, *args, **kwargs):
+        print('Save method executed!')
+        super(IngredientAmount, self).save(*args, **kwargs)
 
 
 class Follow(models.Model):

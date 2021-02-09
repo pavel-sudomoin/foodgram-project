@@ -4,8 +4,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
 
-from .models import Recipe, Tag
+from .models import Recipe, Tag, Ingredient, IngredientAmount
 from .forms import RecipeForm
+
+
+def get_ingredients(data):
+    ingredients = {}
+    for key, value in data.items():
+        if 'nameIngredient' in key:
+            ingredient_id = key.split('_')[1]
+            ingredients[value] = int(data[f'valueIngredient_{ingredient_id}'])
+    return ingredients
 
 
 def create_paginator(request, recipes):
@@ -50,11 +59,24 @@ def follow_index(request):
 @login_required
 def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
+    data = request.POST
     if form.is_valid():
-        recipe = form.save()
+        print('ВОШЛИ')
+        ingredients = get_ingredients(request.POST)
+        recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
-        return redirect("index")
+        for ingredient_name, ingredient_quantity in ingredients.items():
+            ingredient = get_object_or_404(Ingredient, name=ingredient_name)
+            print(f'{ingredient} xx||xx {ingredient_quantity}')
+            ingredient_amount = IngredientAmount(
+                recipe=Recipe.objects.all().first(),
+                ingredient=ingredient,
+                quantity=ingredient_quantity
+            )
+            ingredient_amount.save()
+        form.save_m2m()
+        return redirect('main_page')
     tags = Tag.objects.all()
     return render(request, "formRecipe.html", {
         "form": form,
