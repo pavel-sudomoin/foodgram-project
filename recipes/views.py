@@ -59,19 +59,16 @@ def follow_index(request):
 @login_required
 def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
-    data = request.POST
     if form.is_valid():
-        print('ВОШЛИ')
         ingredients = get_ingredients(request.POST)
         recipe = form.save(commit=False)
         recipe.author = request.user
         recipe.save()
         for ingredient_name, ingredient_quantity in ingredients.items():
-            ingredient = get_object_or_404(Ingredient, name=ingredient_name)
-            print(f'{ingredient} xx||xx {ingredient_quantity}')
+            ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
             ingredient_amount = IngredientAmount(
-                recipe=Recipe.objects.all().first(),
-                ingredient=ingredient,
+                recipe=recipe,
+                ingredient=ingredient_obj,
                 quantity=ingredient_quantity
             )
             ingredient_amount.save()
