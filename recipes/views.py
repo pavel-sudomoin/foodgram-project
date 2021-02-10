@@ -45,6 +45,23 @@ def recipe_view(request, recipe_slug):
     })
 
 
+def profile(request, username):
+    User = get_user_model()
+    author = get_object_or_404(User, username=username)
+    if request.method == 'GET' and 'tag' in request.GET:
+        recipes =  author.recipes.filter(tag__slug=request.GET['tag'])
+    else:
+        recipes = author.recipes.all()
+    tags = Tag.objects.all()
+    paginator, page = create_paginator(request, recipes)
+    return render(request, "authorRecipe.html", {
+        "page": page,
+        "paginator": paginator,
+        'tags': tags,
+        'author': author
+    })
+
+
 @login_required
 def follow_index(request):
     User = get_user_model()
@@ -78,4 +95,17 @@ def new_recipe(request):
     return render(request, "formRecipe.html", {
         "form": form,
         'tags': tags,
+    })
+
+
+@login_required
+def favorite(request):
+    User = get_user_model()
+    recipes = Recipe.objects.filter(favorited__user=request.user)
+    paginator, page = create_paginator(request, recipes)
+    tags = Tag.objects.all()
+    return render(request, "favorite.html", {
+        "page": page,
+        "paginator": paginator,
+        'tags': tags
     })
