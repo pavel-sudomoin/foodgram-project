@@ -2,6 +2,7 @@ const container = document.querySelector('.card-list');
 const counterId = document.querySelector('#counter');
 const api = new Api(apiUrl);
 const header = new Header(counterId);
+/*
 const configButton = {
     subscribe: {
         attr: 'data-out',
@@ -12,6 +13,20 @@ const configButton = {
         active: {
             class: 'button_style_blue',
             text: `Подписаться на автора`
+        }
+    }
+}
+*/
+const configButton = {
+    subscribe: {
+        attr: 'data-out',
+        active: {
+            class: 'button_style_blue',
+            text: 'Отписаться'
+        },
+        default: {
+            class: 'button_style_blue',
+            text: 'Подписаться на автора'
         }
     }
 }
