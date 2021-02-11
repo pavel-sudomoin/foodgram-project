@@ -5,7 +5,8 @@
 {% endblock %}
 {% block title %}{{ recipe.name }}{% endblock %}
 {% block content %}
-    <div class="single-card" data-id="371" data-author="12">
+    <div class="single-card" data-id="{{ recipe.id }}" data-author="12">
+        {% csrf_token %}
         {% load thumbnail %}
         {% thumbnail recipe.image "480x480" crop="center" upscale=True as im %}
             <img src="{{ im.url }}" alt="Изображение {{ recipe.name }}" class="single-card__image">
@@ -14,7 +15,13 @@
             <div class="single-card__header-info">
                 <h1 class="single-card__title">{{ recipe.name }}</h1>
                 <div class="single-card__favorite">
-                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                    {% if user.is_authenticated and user != recipe.author %}
+                        {% if recipe in user.profile.favorites.all %}
+                            <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
+                        {% else %}
+                            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite icon-favorite_big"></span></button>
+                        {% endif %}
+                    {% endif %}
                     <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
                 </div>
             </div>
@@ -50,6 +57,19 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static './js/components/Purchases.js' %}"></script>
+    <script src="{% static './js/components/Favorites.js' %}"></script>
+    <script src="{% static './js/components/Subscribe.js' %}"></script>
+    <script src="{% static './js/config/config.js' %}"></script>
+    
+    <script src="{% static './js/components/MainCards.js' %}"></script>
+    <script src="{% static './js/components/SingleCard.js' %}"></script>
+    <script src="{% static './js/components/Header.js' %}"></script>
+    
+    <script src="{% static './js/api/Api.js' %}"></script>
+    <script src="{% static 'singlePage.js' %}"></script>
 {% endblock %}
 
 <!--

@@ -101,7 +101,7 @@ def new_recipe(request):
 @login_required
 def favorite(request):
     User = get_user_model()
-    recipes = Recipe.objects.filter(favorited__user=request.user)
+    recipes = Recipe.objects.filter(favorited_by__user=request.user)
     paginator, page = create_paginator(request, recipes)
     tags = Tag.objects.all()
     return render(request, "favorite.html", {
