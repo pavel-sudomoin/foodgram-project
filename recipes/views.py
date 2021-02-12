@@ -99,6 +99,39 @@ def new_recipe(request):
 
 
 @login_required
+def edit_recipe(request, recipe_slug):
+    recipe = get_object_or_404(Recipe, slug=recipe_slug)
+    if request.user != recipe.author:
+        return redirect('main_page')
+    form = RecipeForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=recipe
+    )
+    if form.is_valid():
+        ingredients = get_ingredients(request.POST)
+        recipe = form.save(commit=False)
+        recipe.author = request.user
+        recipe.save()
+        for ingredient_name, ingredient_quantity in ingredients.items():
+            ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
+            ingredient_amount = IngredientAmount(
+                recipe=recipe,
+                ingredient=ingredient_obj,
+                quantity=ingredient_quantity
+            )
+            ingredient_amount.save()
+        form.save_m2m()
+        return redirect('main_page')
+    tags = Tag.objects.all()
+    
+    return render(request, "formChangeRecipe.html", {
+        "form": form,
+        'tags': tags,
+    })
+
+
+@login_required
 def favorite(request):
     User = get_user_model()
     recipes = Recipe.objects.filter(favorited_by__user=request.user)
