@@ -65,3 +65,27 @@ def remove_subscriptions(request, author_id):
         user.profile.following.remove(author)
         resp = True
     return Response({'success': resp})
+
+
+@login_required
+@api_view(['GET', 'POST'])
+def add_or_get_purchases(request):
+    recipe = get_object_or_404(Recipe, id=request.data.get('id'))
+    user = request.user
+    resp = False
+    if not user.profile.shoplist.filter(id=recipe.id).exists():
+        user.profile.shoplist.add(recipe)
+        resp = True
+    return Response({'success': resp})
+
+
+@login_required
+@api_view(['DELETE'])
+def remove_purchases(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    user = request.user
+    resp = False
+    if user.profile.shoplist.filter(id=recipe.id).exists():
+        user.profile.shoplist.remove(recipe)
+        resp = True
+    return Response({'success': resp})

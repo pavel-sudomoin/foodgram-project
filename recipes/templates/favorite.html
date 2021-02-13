@@ -5,6 +5,7 @@
 {% endblock %}
 {% block title %}Избранное{% endblock %}
 {% block content %}
+    {% csrf_token %}
     <div class="main__header">
         <h1 class="main__title">Избранное</h1>
         <ul class="tags">
@@ -26,6 +27,19 @@
     {% if page.has_other_pages %}
         {% include "include/paginator.html" with items=page paginator=paginator %}
     {% endif %}
+{% endblock %}
+{% block script %}
+    <script src="{% static './js/components/MainCards.js' %}"></script>
+
+    <script src="{% static './js/components/Purchases.js' %}"></script>
+    <script src="{% static './js/components/Favorites.js' %}"></script>
+
+    <script src="{% static './js/config/config.js' %}"></script>
+    <script src="{% static './js/components/CardList.js' %}"></script>
+    <script src="{% static './js/components/Header.js' %}"></script>
+
+    <script src="{% static './js/api/Api.js' %}"></script>
+    <script src="{% static 'favorite.js' %}"></script>
 {% endblock %}
 
 <!--

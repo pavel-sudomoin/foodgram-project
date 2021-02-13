@@ -176,3 +176,11 @@ def favorite(request):
         'tags': tags,
         'selected_tag': selected_tag,
     })
+
+
+@login_required
+def shoplist(request):
+    recipes = Recipe.objects.filter(added_to_shoplist_by__user=request.user)
+    return render(request, "shopList.html", {
+        "recipes": recipes,
+    })
