@@ -109,6 +109,7 @@ def edit_recipe(request, recipe_slug):
         instance=recipe
     )
     if form.is_valid():
+        IngredientAmount.objects.filter(recipe=recipe).delete()
         ingredients = get_ingredients(request.POST)
         recipe = form.save(commit=False)
         recipe.author = request.user
@@ -123,12 +124,35 @@ def edit_recipe(request, recipe_slug):
             ingredient_amount.save()
         form.save_m2m()
         return redirect('main_page')
-    tags = Tag.objects.all()
-    
+
+    tags = []
+    for tag_field in form['tag']:
+        tag_model = Tag.objects.get(name=tag_field.data['label'])
+        tags.append({
+            'name': tag_model.name,
+            'id_for_label': f'id_{tag_model.slug}',
+            'value': tag_field.data['value'],
+            'selected': tag_field.data['selected'],
+            'color': tag_model.color
+        })
+
+    ingredient_amount_for_render = IngredientAmount.objects.filter(recipe=recipe)
+
     return render(request, "formChangeRecipe.html", {
         "form": form,
         'tags': tags,
+        'ingredients': ingredient_amount_for_render,
+        'recipe_slug': recipe_slug,
     })
+
+
+@login_required
+def delete_recipe(request, recipe_slug):
+    recipe = get_object_or_404(Recipe, slug=recipe_slug)
+    if request.user != recipe.author:
+        return redirect('main_page')
+    recipe.delete()
+    return redirect('main_page')
 
 
 @login_required

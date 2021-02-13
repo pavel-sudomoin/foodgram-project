@@ -25,8 +25,8 @@
                     <div class="tags">
                         {% for tag in tags %}
                             <div class="tags__item">
-                                <input type="checkbox" name="tag" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" value="{{ forloop.counter }}">
-                                <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.name }}</label>
+                                <input type="checkbox" name="tag" id="tag.id_for_label }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" value="{{ tag.value }}" {% if tag.selected %}checked{% endif %}>
+                                <label for="{{ tag.id_for_label }}" class="tags__label">{{ tag.name }}</label>
                             </div>
                         {% endfor %}
                     </div>
@@ -44,7 +44,17 @@
                         <input type="number" id="cantidad" class="form__input" min="0">
                         <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                     </div>
-                    <div class="form__field-group-ingredientes-container"></div>
+                    <div class="form__field-group-ingredientes-container">
+                        {% for ingredient in ingredients %}
+                            <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
+                                <span>{{ ingredient.ingredient.name }} {{ ingredient.quantity }}{{ ingredient.ingredient.unit }}</span>
+                                <span class="form__field-item-delete"></span>
+                                <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.name }}">
+                                <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.quantity }}">
+                                <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.unit }}">
+                            </div>
+                        {% endfor %}
+                    </div>
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                     <span class="form__error">{{ form.ingredient.errors }}</span>
                 </div>
@@ -73,7 +83,7 @@
                 </div>
             </div>
             <div class="form__footer">
-                <button type="submit" class="button button_style_blue">Сохранить<a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a></button>
+                <button type="submit" class="button button_style_blue">Сохранить<a style="margin-left: 2.5em" href="{% url 'delete_recipe' recipe_slug %}" class="form__ingredient-link">Удалить</a></button>
             </div>
         </form>
     </div>
