@@ -25,8 +25,10 @@ def create_paginator(request, recipes):
 
 
 def index(request):
+    selected_tag = None
     if request.method == 'GET' and 'tag' in request.GET:
-        recipes = Recipe.objects.filter(tag__slug=request.GET['tag'])
+        selected_tag = request.GET['tag']
+        recipes = Recipe.objects.filter(tag__slug=selected_tag)
     else:
         recipes = Recipe.objects.all()
     tags = Tag.objects.all()
@@ -35,6 +37,7 @@ def index(request):
         "page": page,
         "paginator": paginator,
         'tags': tags,
+        'selected_tag': selected_tag,
     })
 
 
@@ -48,8 +51,10 @@ def recipe_view(request, recipe_slug):
 def profile(request, username):
     User = get_user_model()
     author = get_object_or_404(User, username=username)
+    selected_tag = None
     if request.method == 'GET' and 'tag' in request.GET:
-        recipes =  author.recipes.filter(tag__slug=request.GET['tag'])
+        selected_tag = request.GET['tag']
+        recipes =  author.recipes.filter(tag__slug=selected_tag)
     else:
         recipes = author.recipes.all()
     tags = Tag.objects.all()
@@ -58,7 +63,8 @@ def profile(request, username):
         "page": page,
         "paginator": paginator,
         'tags': tags,
-        'author': author
+        'author': author,
+        'selected_tag': selected_tag,
     })
 
 
@@ -157,12 +163,16 @@ def delete_recipe(request, recipe_slug):
 
 @login_required
 def favorite(request):
-    User = get_user_model()
     recipes = Recipe.objects.filter(favorited_by__user=request.user)
+    selected_tag = None
+    if request.method == 'GET' and 'tag' in request.GET:
+        selected_tag = request.GET['tag']
+        recipes = recipes.filter(tag__slug=selected_tag)
     paginator, page = create_paginator(request, recipes)
     tags = Tag.objects.all()
     return render(request, "favorite.html", {
         "page": page,
         "paginator": paginator,
-        'tags': tags
+        'tags': tags,
+        'selected_tag': selected_tag,
     })

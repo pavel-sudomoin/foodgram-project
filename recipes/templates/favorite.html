@@ -10,7 +10,9 @@
         <ul class="tags">
             {% for tag in tags %}
                 <li class="tags__item">
-                    <a id="{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}  tags__checkbox_active" href="{% url 'favorite'%}?tag={{ tag.slug }}"></a>
+                    <a  id="{{ tag.slug }}"
+                        class="tags__checkbox tags__checkbox_style_{{ tag.color }} {% if tag.slug == selected_tag %}tags__checkbox_active{% endif %}"
+                        href="{% url 'favorite'%}{% if tag.slug != selected_tag %}?tag={{ tag.slug }}{% endif %}"></a>
                     <span for="{{ tag.slug }}" class="tags__label">{{ tag.name }}</span>
                 </li>
             {% endfor %}
