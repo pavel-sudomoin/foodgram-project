@@ -3,9 +3,19 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
+from django.conf import settings
+
+import reportlab
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.units import cm
 
 from .models import Recipe, Tag, Ingredient, IngredientAmount
 from .forms import RecipeForm
+
+
+reportlab.rl_config.TTFSearchPath.append(str(settings.BASE_DIR + settings.STATIC_URL))
 
 
 def get_ingredients(data):
@@ -184,3 +194,37 @@ def shoplist(request):
     return render(request, "shopList.html", {
         "recipes": recipes,
     })
+
+
+@login_required
+def shoplist_download(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="ingredients.pdf"'
+
+    ingredient_amount = IngredientAmount.objects.filter(
+        recipe__added_to_shoplist_by__user=request.user
+    )
+    ingredients_for_output = {}
+    for ingredient in ingredient_amount:
+        name = ingredient.ingredient.name
+        unit = ingredient.ingredient.unit
+        quantity = ingredient.quantity
+        if name not in ingredients_for_output:
+            ingredients_for_output[name] = {
+                'unit': unit,
+                'quantity': quantity,
+            }
+        else:
+            ingredients_for_output[name]['quantity'] += quantity
+
+    c = canvas.Canvas(response)
+    pdfmetrics.registerFont(TTFont('FreeSans', 'FreeSans.ttf'))
+    c.setFont('FreeSans', 14)
+    textobject = c.beginText(2*cm, 29.7*cm - 2*cm)
+    for name, data in ingredients_for_output.items():
+        textobject.textLine(f"{name} ({data['unit']}) — {data['quantity']}")
+    c.drawText(textobject)
+    c.showPage()
+    c.save()
+
+    return response

@@ -12,6 +12,7 @@ urlpatterns = [
     path("recipe/<str:recipe_slug>/delete/", views.delete_recipe, name="delete_recipe"),
     path("user/<str:username>/", views.profile, name="profile"),
     path("shoplist/", views.shoplist, name="shoplist"),
+    path("shoplist/download", views.shoplist_download, name="shoplist_download"),
 #    path("follow/", views.follow_index, name="follow_index"),
 #    path("group/<slug:slug>/", views.group_posts, name="group_posts"),
 #    path("new/", views.new_post, name="new_post"),
