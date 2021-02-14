@@ -14,6 +14,7 @@ urlpatterns = [
     path("", include("recipes.urls")),
     path("auth/", include("users.urls")),
     path("auth/", include("django.contrib.auth.urls")),
+    path('about/', include('about.urls', namespace='about')),
     #path("about/", include("django.contrib.flatpages.urls")),
     #path("about-author/", views.flatpage, {"url": "/about-author/"}, name="author"),
     #path("about-spec/", views.flatpage, {"url": "/about-spec/"}, name="spec"),

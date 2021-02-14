@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+{% block title %}Об авторе{% endblock %}
+{% block content %}
+    <div class="custom-center-block">
+        <p class="custom-text-block">Добрый день! Эта страница об авторе проекта.</p>
+    </div>
+{% endblock %}
