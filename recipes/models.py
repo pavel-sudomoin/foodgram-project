@@ -38,7 +38,7 @@ class Recipe(models.Model):
     tag = models.ManyToManyField(
         Tag,
         related_name='recipes')
-    time = models.DurationField()
+    time = models.PositiveIntegerField()
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):

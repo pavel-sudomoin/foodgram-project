@@ -23,7 +23,7 @@ def get_ingredients(data):
     for key, value in data.items():
         if 'nameIngredient' in key:
             ingredient_id = key.split('_')[1]
-            ingredients[value] = int(data[f'valueIngredient_{ingredient_id}'])
+            ingredients[value] = round(float(data[f'valueIngredient_{ingredient_id}']), 1)
     return ingredients
 
 

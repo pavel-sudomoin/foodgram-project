@@ -6,6 +6,7 @@
 {% block title %}Редактирование рецепта{% endblock %}
 {% block content %}
     {% load user_filters %}
+    {% load l10n %}
     <div class="main__header">
         <h1 class="main__title">Редактирование рецепта</h1>
     </div>
@@ -47,10 +48,10 @@
                     <div class="form__field-group-ingredientes-container">
                         {% for ingredient in ingredients %}
                             <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
-                                <span>{{ ingredient.ingredient.name }} {{ ingredient.quantity }}{{ ingredient.ingredient.unit }}</span>
+                                <span>{{ ingredient.ingredient.name }} {{ ingredient.quantity|unlocalize|floatformat:"-1" }} {{ ingredient.ingredient.unit }}</span>
                                 <span class="form__field-item-delete"></span>
                                 <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.name }}">
-                                <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.quantity }}">
+                                <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.quantity|unlocalize }}">
                                 <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.unit }}">
                             </div>
                         {% endfor %}
