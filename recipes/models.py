@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.text import slugify
+
+from autoslug import AutoSlugField
+
 User = get_user_model()
 
 
@@ -39,14 +41,14 @@ class Recipe(models.Model):
         Tag,
         related_name='recipes')
     time = models.PositiveIntegerField()
-    slug = models.SlugField(unique=True)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Recipe, self).save(*args, **kwargs)
+    slug = AutoSlugField(populate_from='name', always_update=True, unique=True)
+    pub_date = models.DateTimeField("date published", auto_now_add=True)
 
     def __str__(self):
             return self.name
+
+    class Meta:
+        ordering = ("-pub_date",)
 
 
 class IngredientAmount(models.Model):
@@ -68,35 +70,3 @@ class IngredientAmount(models.Model):
     def save(self, *args, **kwargs):
         print('Save method executed!')
         super(IngredientAmount, self).save(*args, **kwargs)
-
-
-class Follow(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="follower"
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="following"
-    )
-
-    class Meta:
-        unique_together = ('user', 'author')
-
-
-class Favorite(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='favorites'
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='favorited'
-    )
-
-    class Meta:
-        unique_together = ('user', 'recipe')
