@@ -30,13 +30,12 @@ class Recipe(models.Model):
         related_name='recipes'
     )
     name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to="recipes/", blank=True, null=True)
+    image = models.ImageField(upload_to="recipes/")
     description = models.TextField()
     ingredient = models.ManyToManyField(
         Ingredient,
         through='IngredientAmount',
-        related_name='recipes',
-        blank=True)
+        related_name='recipes')
     tag = models.ManyToManyField(
         Tag,
         related_name='recipes')
