@@ -7,7 +7,8 @@ from .models import Recipe, Tag
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ["name", "image", 'description', 'tag', 'time', 'ingredient']
+        fields = ["name", "image", 'description', 'tag', 'time']
+        exclude = ['ingredients']
         #labels = {
         #    "text": _("Текст поста"),
         #    "group": _("Группа"),

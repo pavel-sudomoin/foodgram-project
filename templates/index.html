@@ -12,8 +12,8 @@
             {% for tag in tags %}
                 <li class="tags__item">
                     <a  id="{{ tag.slug }}"
-                        class="tags__checkbox tags__checkbox_style_{{ tag.color }} {% if tag.slug == selected_tag %}tags__checkbox_active{% endif %}"
-                        href="{% url 'main_page'%}{% if tag.slug != selected_tag %}?tag={{ tag.slug }}{% endif %}"></a>
+                        class="tags__checkbox {{ tag.color_class }} {% if tag.is_selected %}tags__checkbox_active{% endif %}"
+                        href="{% url 'main_page' %}{{ tag.href }}"></a>
                     <span for="{{ tag.slug }}" class="tags__label">{{ tag.name }}</span>
                 </li>
             {% endfor %}

@@ -34,20 +34,46 @@ def create_paginator(request, recipes):
     return (paginator, page)
 
 
+def tag_status_handler(selected_tags):
+    tags = []
+    current_href = ''
+    if selected_tags:
+        current_href = f'&tag={"&tag=".join(selected_tags)}'
+    for tag in Tag.objects.all():
+        href = selected_tags.copy()
+        is_selected = False
+        if tag.slug in href:
+            href.remove(tag.slug)
+            is_selected = True
+        else:
+            href.append(tag.slug)
+        href = '&tag='.join(href)
+        if href:
+            href = f'?tag={href}'
+        tags.append({
+            'name': tag.name,
+            'slug': tag.slug,
+            'color_class': f'tags__checkbox_style_{tag.color}',
+            'is_selected': is_selected,
+            'href': href,
+        })
+    return tags, current_href
+
+
 def index(request):
-    selected_tag = None
+    selected_tags = []
     if request.method == 'GET' and 'tag' in request.GET:
-        selected_tag = request.GET['tag']
-        recipes = Recipe.objects.filter(tag__slug=selected_tag)
+        selected_tags = request.GET.getlist('tag')
+        recipes = Recipe.objects.filter(tag__slug__in=selected_tags).distinct()
     else:
         recipes = Recipe.objects.all()
-    tags = Tag.objects.all()
+    tags, current_href = tag_status_handler(selected_tags)
     paginator, page = create_paginator(request, recipes)
     return render(request, "index.html", {
         "page": page,
         "paginator": paginator,
         'tags': tags,
-        'selected_tag': selected_tag,
+        'current_href': current_href,
     })
 
 
@@ -61,20 +87,20 @@ def recipe_view(request, recipe_slug):
 def profile(request, username):
     User = get_user_model()
     author = get_object_or_404(User, username=username)
-    selected_tag = None
+    selected_tags = []
     if request.method == 'GET' and 'tag' in request.GET:
-        selected_tag = request.GET['tag']
-        recipes =  author.recipes.filter(tag__slug=selected_tag)
+        selected_tags = request.GET.getlist('tag')
+        recipes = Recipe.objects.filter(tag__slug__in=selected_tags).distinct()
     else:
         recipes = author.recipes.all()
-    tags = Tag.objects.all()
+    tags, current_href = tag_status_handler(selected_tags)
     paginator, page = create_paginator(request, recipes)
     return render(request, "authorRecipe.html", {
         "page": page,
         "paginator": paginator,
         'tags': tags,
+        'current_href': current_href,
         'author': author,
-        'selected_tag': selected_tag,
     })
 
 
@@ -179,18 +205,18 @@ def delete_recipe(request, recipe_slug):
 
 @login_required
 def favorite(request):
+    selected_tags = []
     recipes = Recipe.objects.filter(favorited_by__user=request.user)
-    selected_tag = None
     if request.method == 'GET' and 'tag' in request.GET:
-        selected_tag = request.GET['tag']
-        recipes = recipes.filter(tag__slug=selected_tag)
+        selected_tags = request.GET.getlist('tag')
+        recipes = Recipe.objects.filter(tag__slug__in=selected_tags).distinct()
     paginator, page = create_paginator(request, recipes)
-    tags = Tag.objects.all()
+    tags, current_href = tag_status_handler(selected_tags)
     return render(request, "favorite.html", {
         "page": page,
         "paginator": paginator,
         'tags': tags,
-        'selected_tag': selected_tag,
+        'current_href': current_href,
     })
 
 
