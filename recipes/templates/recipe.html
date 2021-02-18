@@ -41,7 +41,7 @@
                 </ul>
             </div>
             <ul class="single-card__items">
-                {% if user.is_authenticated and user != recipe.author %}
+                {% if user.is_authenticated %}
                     <li class="single-card__item">
                         {% if recipe in user.profile.shoplist.all %}
                             <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
@@ -49,13 +49,15 @@
                             <button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button>
                         {% endif %}
                     </li>
-                    <li class="single-card__item">
-                        {% if recipe.author in user.profile.following.all %}
-                            <button class="button button_style_light-blue button_size_subscribe button_style_blue" name="subscribe">Отписаться от автора</button>
-                        {% else %}
-                            <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
-                        {% endif %}
-                    </li>
+                    {% if user != recipe.author %}
+                        <li class="single-card__item">
+                            {% if recipe.author in user.profile.following.all %}
+                                <button class="button button_style_light-blue button_size_subscribe button_style_blue" name="subscribe">Отписаться от автора</button>
+                            {% else %}
+                                <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button>
+                            {% endif %}
+                        </li>
+                    {% endif %}
                 {% endif %}
             </ul>
             <div class="single-card__section">
