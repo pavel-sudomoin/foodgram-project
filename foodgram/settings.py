@@ -36,9 +36,6 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'users',
-    'recipes',
-    'about',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.admin',
@@ -49,6 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sorl.thumbnail',
     'rest_framework',
+    'users',
+    'recipes',
+    'about',
 ]
 
 MIDDLEWARE = [
@@ -149,3 +149,5 @@ LOGOUT_REDIRECT_URL = "main_page"
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+SITE_ID = 2
