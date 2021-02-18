@@ -94,19 +94,22 @@ def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         ingredients = get_ingredients(request.POST)
-        recipe = form.save(commit=False)
-        recipe.author = request.user
-        recipe.save()
-        for ingredient_name, ingredient_quantity in ingredients.items():
-            ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
-            ingredient_amount = IngredientAmount(
-                recipe=recipe,
-                ingredient=ingredient_obj,
-                quantity=ingredient_quantity
-            )
-            ingredient_amount.save()
-        form.save_m2m()
-        return redirect('main_page')
+        if not ingredients:
+            form.add_error('ingredient', 'Вы не добавили ни одного ингридиента')
+        else:
+            recipe = form.save(commit=False)
+            recipe.author = request.user
+            recipe.save()
+            for ingredient_name, ingredient_quantity in ingredients.items():
+                ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
+                ingredient_amount = IngredientAmount(
+                    recipe=recipe,
+                    ingredient=ingredient_obj,
+                    quantity=ingredient_quantity
+                )
+                ingredient_amount.save()
+            form.save_m2m()
+            return redirect('main_page')
     tags = Tag.objects.all()
     return render(request, "formRecipe.html", {
         "form": form,
@@ -125,21 +128,24 @@ def edit_recipe(request, recipe_slug):
         instance=recipe
     )
     if form.is_valid():
-        IngredientAmount.objects.filter(recipe=recipe).delete()
         ingredients = get_ingredients(request.POST)
-        recipe = form.save(commit=False)
-        recipe.author = request.user
-        recipe.save()
-        for ingredient_name, ingredient_quantity in ingredients.items():
-            ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
-            ingredient_amount = IngredientAmount(
-                recipe=recipe,
-                ingredient=ingredient_obj,
-                quantity=ingredient_quantity
-            )
-            ingredient_amount.save()
-        form.save_m2m()
-        return redirect('main_page')
+        if not ingredients:
+            form.add_error('ingredient', 'Вы не добавили ни одного ингридиента')
+        else:
+            IngredientAmount.objects.filter(recipe=recipe).delete()
+            recipe = form.save(commit=False)
+            recipe.author = request.user
+            recipe.save()
+            for ingredient_name, ingredient_quantity in ingredients.items():
+                ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
+                ingredient_amount = IngredientAmount(
+                    recipe=recipe,
+                    ingredient=ingredient_obj,
+                    quantity=ingredient_quantity
+                )
+                ingredient_amount.save()
+            form.save_m2m()
+            return redirect('main_page')
 
     tags = []
     for tag_field in form['tag']:
