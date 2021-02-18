@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
+{% endblock %}
+{% block title %}Ошибка 404{% endblock %}
+{% block content %}
+    <div class="custom-center-block">
+        <p class="custom-text-block">Ошибка 404 - данная страница не найдена</p>
+    </div>
+{% endblock %}
