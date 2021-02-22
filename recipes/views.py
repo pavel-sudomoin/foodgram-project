@@ -109,7 +109,7 @@ def follow_index(request):
     User = get_user_model()
     authors = User.objects.filter(followed_by__user=request.user)
     paginator, page = create_paginator(request, authors)
-    return render(request, "follow.html", {
+    return render(request, "myFollow.html", {
         "page": page,
         "paginator": paginator
     })
