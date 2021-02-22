@@ -82,7 +82,6 @@ def new_recipe(request):
                     quantity=ingredient_quantity
                 )
                 ingredient_amount.save()
-            form.save_m2m()
             return redirect('main_page')
     tags = Tag.objects.all()
     return render(request, "formRecipe.html", {
@@ -122,7 +121,6 @@ def edit_recipe(request, recipe_slug):
                     quantity=ingredient_quantity
                 )
                 ingredient_amount.save()
-            form.save_m2m()
             return redirect('main_page')
 
     tags = []
