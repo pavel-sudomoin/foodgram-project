@@ -1,0 +1,13 @@
+<div class="main__header">
+    <h1 class="main__title">{{title}}</h1>
+    <ul class="tags">
+        {% for tag in tags %}
+            <li class="tags__item">
+                <a  id="{{ tag.slug }}"
+                    class="tags__checkbox {{ tag.color_class }} {% if tag.is_selected %}tags__checkbox_active{% endif %}"
+                    href="{{ page_href }}{{ tag.href }}"></a>
+                <span for="{{ tag.slug }}" class="tags__label">{{ tag.name }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
