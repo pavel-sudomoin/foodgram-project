@@ -79,7 +79,7 @@ def index(request):
 
 def recipe_view(request, recipe_slug):
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
-    return render(request, "recipe.html", {
+    return render(request, "singlePage.html", {
         "recipe": recipe
     })
 
