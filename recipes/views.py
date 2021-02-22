@@ -15,7 +15,9 @@ from .forms import RecipeForm
 from .utils import get_ingredients, create_paginator, get_data_recipes_list
 
 
-reportlab.rl_config.TTFSearchPath.append(str(settings.BASE_DIR + settings.STATIC_URL))
+reportlab.rl_config.TTFSearchPath.append(
+    str(settings.BASE_DIR + settings.STATIC_URL)
+)
 
 
 def index(request):
@@ -63,13 +65,17 @@ def new_recipe(request):
     if form.is_valid():
         ingredients = get_ingredients(request.POST)
         if not ingredients:
-            form.add_error('ingredient', 'Вы не добавили ни одного ингридиента')
+            form.add_error(
+                'ingredient',
+                'Вы не добавили ни одного ингридиента'
+            )
         else:
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
             for ingredient_name, ingredient_quantity in ingredients.items():
-                ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
+                ingredient_obj = get_object_or_404(Ingredient,
+                                                   name=ingredient_name)
                 ingredient_amount = IngredientAmount(
                     recipe=recipe,
                     ingredient=ingredient_obj,
@@ -98,14 +104,18 @@ def edit_recipe(request, recipe_slug):
     if form.is_valid():
         ingredients = get_ingredients(request.POST)
         if not ingredients:
-            form.add_error('ingredient', 'Вы не добавили ни одного ингридиента')
+            form.add_error(
+                'ingredient',
+                'Вы не добавили ни одного ингридиента'
+            )
         else:
             IngredientAmount.objects.filter(recipe=recipe).delete()
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
             for ingredient_name, ingredient_quantity in ingredients.items():
-                ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
+                ingredient_obj = get_object_or_404(Ingredient,
+                                                   name=ingredient_name)
                 ingredient_amount = IngredientAmount(
                     recipe=recipe,
                     ingredient=ingredient_obj,
@@ -126,12 +136,12 @@ def edit_recipe(request, recipe_slug):
             'color': tag_model.color
         })
 
-    ingredient_amount_for_render = IngredientAmount.objects.filter(recipe=recipe)
+    ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
 
     return render(request, "formChangeRecipe.html", {
         "form": form,
         'tags': tags,
-        'ingredients': ingredient_amount_for_render,
+        'ingredients': ingredients_for_render,
         'recipe_slug': recipe_slug,
     })
 
