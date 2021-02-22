@@ -21,11 +21,8 @@ def create_paginator(request, recipes):
     return (paginator, page)
 
 
-def tag_status_handler(selected_tags):
+def get_tags_with_status(selected_tags):
     tags = []
-    current_href = ''
-    if selected_tags:
-        current_href = f'&tag={"&tag=".join(selected_tags)}'
     for tag in Tag.objects.all():
         href = selected_tags.copy()
         is_selected = False
@@ -44,4 +41,23 @@ def tag_status_handler(selected_tags):
             'is_selected': is_selected,
             'href': href,
         })
-    return tags, current_href
+    return tags
+
+
+def get_data_recipes_list(request, recipes, title):
+    selected_tags = []
+    current_href = ''
+    if request.method == 'GET' and 'tag' in request.GET:
+        selected_tags = request.GET.getlist('tag')
+        recipes = recipes.filter(tag__slug__in=selected_tags).distinct()
+    if selected_tags:
+        current_href = f'&tag={"&tag=".join(selected_tags)}'
+    tags = get_tags_with_status(selected_tags)
+    paginator, page = create_paginator(request, recipes)
+    return {
+        'page': page,
+        'paginator': paginator,
+        'tags': tags,
+        'current_href': current_href,
+        'title': title,
+    }

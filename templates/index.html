@@ -3,11 +3,11 @@
 {% block styles %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 {% endblock %}
-{% block title %}Рецепты{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
     {% csrf_token %}
     {% url 'main_page' as page_href %}
-    {% include "include/main_header.html" with title='Рецепты' tags=tags page_href=page_href %}
+    {% include "include/main_header.html" with title=title tags=tags page_href=page_href %}
     {% include "include/card_list.html" with page=page paginator=paginator %}
 {% endblock %}
 {% block script %}

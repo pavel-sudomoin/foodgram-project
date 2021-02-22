@@ -7,7 +7,7 @@
 {% block content %}
     {% csrf_token %}
     {% url 'profile' author as page_href %}
-    {% include "include/main_header.html" with title=author tags=tags page_href=page_href %}
+    {% include "include/main_header.html" with title=title tags=tags page_href=page_href %}
     {% if user.is_authenticated and user != author %}
         <div class="author-subscribe" data-author="{{ author.id }}">
             <p style="padding: 0 0 2em 0;">
