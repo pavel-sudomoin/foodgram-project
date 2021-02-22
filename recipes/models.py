@@ -30,7 +30,7 @@ class Recipe(models.Model):
         related_name='recipes'
     )
     name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to="recipes/")
+    image = models.ImageField(upload_to='recipes/')
     description = models.TextField()
     ingredient = models.ManyToManyField(
         Ingredient,
@@ -42,13 +42,13 @@ class Recipe(models.Model):
         related_name='recipes')
     time = models.PositiveIntegerField()
     slug = AutoSlugField(populate_from='name', always_update=True, unique=True)
-    pub_date = models.DateTimeField("date published", auto_now_add=True)
+    pub_date = models.DateTimeField('date published', auto_now_add=True)
 
     def __str__(self):
             return self.name
 
     class Meta:
-        ordering = ("-pub_date",)
+        ordering = ('-pub_date',)
 
 
 class IngredientAmount(models.Model):
@@ -66,7 +66,3 @@ class IngredientAmount(models.Model):
 
     class Meta:
         unique_together = ('recipe', 'ingredient')
-
-    def save(self, *args, **kwargs):
-        print('Save method executed!')
-        super(IngredientAmount, self).save(*args, **kwargs)
