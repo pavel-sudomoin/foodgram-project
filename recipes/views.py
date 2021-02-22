@@ -51,7 +51,7 @@ def profile(request, username):
 @login_required
 def follow_index(request):
     User = get_user_model()
-    authors = User.objects.filter(followed_by__user=request.user)
+    authors = User.objects.filter(followed_by__user=request.user).order_by('id')
     paginator, page = create_paginator(request, authors)
     return render(request, 'myFollow.html', {
         'page': page,
