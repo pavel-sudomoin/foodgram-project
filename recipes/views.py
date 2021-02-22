@@ -26,13 +26,13 @@ def index(request):
         recipes=Recipe.objects.all(),
         title='Рецепты',
     )
-    return render(request, "index.html", data)
+    return render(request, 'index.html', data)
 
 
 def recipe_view(request, recipe_slug):
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
-    return render(request, "singlePage.html", {
-        "recipe": recipe
+    return render(request, 'singlePage.html', {
+        'recipe': recipe
     })
 
 
@@ -45,7 +45,7 @@ def profile(request, username):
         title=author.username,
     )
     data['author'] = author
-    return render(request, "authorRecipe.html", data)
+    return render(request, 'authorRecipe.html', data)
 
 
 @login_required
@@ -53,9 +53,9 @@ def follow_index(request):
     User = get_user_model()
     authors = User.objects.filter(followed_by__user=request.user)
     paginator, page = create_paginator(request, authors)
-    return render(request, "myFollow.html", {
-        "page": page,
-        "paginator": paginator
+    return render(request, 'myFollow.html', {
+        'page': page,
+        'paginator': paginator
     })
 
 
@@ -84,8 +84,8 @@ def new_recipe(request):
                 ingredient_amount.save()
             return redirect('main_page')
     tags = Tag.objects.all()
-    return render(request, "formRecipe.html", {
-        "form": form,
+    return render(request, 'formRecipe.html', {
+        'form': form,
         'tags': tags,
     })
 
@@ -136,8 +136,8 @@ def edit_recipe(request, recipe_slug):
 
     ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
 
-    return render(request, "formChangeRecipe.html", {
-        "form": form,
+    return render(request, 'formChangeRecipe.html', {
+        'form': form,
         'tags': tags,
         'ingredients': ingredients_for_render,
         'recipe_slug': recipe_slug,
@@ -160,14 +160,14 @@ def favorite(request):
         recipes=Recipe.objects.filter(favorited_by__user=request.user),
         title='Избранное',
     )
-    return render(request, "favorite.html", data)
+    return render(request, 'favorite.html', data)
 
 
 @login_required
 def shoplist(request):
     recipes = Recipe.objects.filter(added_to_shoplist_by__user=request.user)
-    return render(request, "shopList.html", {
-        "recipes": recipes,
+    return render(request, 'shopList.html', {
+        'recipes': recipes,
     })
 
 
@@ -210,4 +210,4 @@ def page_not_found(request, exception):
 
 
 def server_error(request):
-    return render(request, "misc/500.html", status=500)
+    return render(request, 'misc/500.html', status=500)
