@@ -47,7 +47,9 @@
                     </div>
                     <div class="form__field-group-ingredientes-container"></div>
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
-                    <span class="form__error">{{ form.ingredient.errors }}</span>
+                    {% if show_ingredients_error %}
+                        <span class="form__error">Вы не добавили ингредиентов.</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">

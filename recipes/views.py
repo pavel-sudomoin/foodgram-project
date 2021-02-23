@@ -62,31 +62,30 @@ def follow_index(request):
 @login_required
 def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
+    ingredients = get_ingredients(request.POST)
+    show_ingredients_error = False
     if form.is_valid():
-        ingredients = get_ingredients(request.POST)
-        if not ingredients:
-            form.add_error(
-                'ingredient',
-                'Вы не добавили ни одного ингридиента'
-            )
-        else:
+        show_ingredients_error = not ingredients
+        if not show_ingredients_error:
             recipe = form.save(commit=False)
             recipe.author = request.user
             recipe.save()
             for ingredient_name, ingredient_quantity in ingredients.items():
                 ingredient_obj = get_object_or_404(Ingredient,
-                                                   name=ingredient_name)
+                                                name=ingredient_name)
                 ingredient_amount = IngredientAmount(
                     recipe=recipe,
                     ingredient=ingredient_obj,
                     quantity=ingredient_quantity
                 )
                 ingredient_amount.save()
+            form.save_m2m()
             return redirect('main_page')
     tags = get_form_tags_with_status(form)
     return render(request, 'formRecipe.html', {
         'form': form,
         'tags': tags,
+        'show_ingredients_error': show_ingredients_error,
     })
 
 
@@ -100,14 +99,11 @@ def edit_recipe(request, recipe_slug):
         files=request.FILES or None,
         instance=recipe
     )
+    ingredients = get_ingredients(request.POST)
+    show_ingredients_error = False
     if form.is_valid():
-        ingredients = get_ingredients(request.POST)
-        if not ingredients:
-            form.add_error(
-                'ingredient',
-                'Вы не добавили ни одного ингридиента'
-            )
-        else:
+        show_ingredients_error = not ingredients
+        if not show_ingredients_error:
             IngredientAmount.objects.filter(recipe=recipe).delete()
             recipe = form.save(commit=False)
             recipe.author = request.user
@@ -121,6 +117,7 @@ def edit_recipe(request, recipe_slug):
                     quantity=ingredient_quantity
                 )
                 ingredient_amount.save()
+            form.save_m2m()
             return redirect('main_page')
     tags = get_form_tags_with_status(form)
     ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
@@ -128,6 +125,7 @@ def edit_recipe(request, recipe_slug):
         'form': form,
         'tags': tags,
         'ingredients': ingredients_for_render,
+        'show_ingredients_error': show_ingredients_error,
         'recipe_slug': recipe_slug,
     })
 
