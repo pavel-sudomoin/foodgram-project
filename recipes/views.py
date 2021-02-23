@@ -10,9 +10,10 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.units import cm
 
-from .models import Recipe, Tag, Ingredient, IngredientAmount
+from .models import Recipe, Ingredient, IngredientAmount
 from .forms import RecipeForm
-from .utils import get_ingredients, create_paginator, get_data_recipes_list, get_form_tags_with_status
+from .utils import get_ingredients, create_paginator
+from .utils import get_data_recipes_list, get_form_tags_with_status
 
 
 reportlab.rl_config.TTFSearchPath.append(
@@ -51,7 +52,8 @@ def profile(request, username):
 @login_required
 def follow_index(request):
     User = get_user_model()
-    authors = User.objects.filter(followed_by__user=request.user).order_by('id')
+    authors = User.objects.filter(
+        followed_by__user=request.user).order_by('id')
     paginator, page = create_paginator(request, authors)
     return render(request, 'myFollow.html', {
         'page': page,
@@ -72,7 +74,7 @@ def new_recipe(request):
             recipe.save()
             for ingredient_name, ingredient_quantity in ingredients.items():
                 ingredient_obj = get_object_or_404(Ingredient,
-                                                name=ingredient_name)
+                                                   name=ingredient_name)
                 ingredient_amount = IngredientAmount(
                     recipe=recipe,
                     ingredient=ingredient_obj,
