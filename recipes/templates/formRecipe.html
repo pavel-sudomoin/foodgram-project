@@ -26,8 +26,8 @@
                     <div class="tags">
                         {% for tag in tags %}
                             <div class="tags__item">
-                                <input type="checkbox" name="tag" id="id_{{ tag.slug }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" value="{{ forloop.counter }}">
-                                <label for="id_{{ tag.slug }}" class="tags__label">{{ tag.name }}</label>
+                                <input type="checkbox" name="tag" id="tag.id_for_label }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" value="{{ tag.value }}" {% if tag.selected %}checked{% endif %}>
+                                <label for="{{ tag.id_for_label }}" class="tags__label">{{ tag.name }}</label>
                             </div>
                         {% endfor %}
                     </div>

@@ -61,3 +61,17 @@ def get_data_recipes_list(request, recipes, title):
         'current_href': current_href,
         'title': title,
     }
+
+
+def get_form_tags_with_status(form):
+    tags = []
+    for tag_field in form['tag']:
+        tag_model = Tag.objects.get(name=tag_field.data['label'])
+        tags.append({
+            'name': tag_model.name,
+            'id_for_label': f'id_{tag_model.slug}',
+            'value': tag_field.data['value'],
+            'selected': tag_field.data['selected'],
+            'color': tag_model.color
+        })
+    return tags

@@ -12,7 +12,7 @@ from reportlab.lib.units import cm
 
 from .models import Recipe, Tag, Ingredient, IngredientAmount
 from .forms import RecipeForm
-from .utils import get_ingredients, create_paginator, get_data_recipes_list
+from .utils import get_ingredients, create_paginator, get_data_recipes_list, get_form_tags_with_status
 
 
 reportlab.rl_config.TTFSearchPath.append(
@@ -83,7 +83,7 @@ def new_recipe(request):
                 )
                 ingredient_amount.save()
             return redirect('main_page')
-    tags = Tag.objects.all()
+    tags = get_form_tags_with_status(form)
     return render(request, 'formRecipe.html', {
         'form': form,
         'tags': tags,
@@ -122,20 +122,8 @@ def edit_recipe(request, recipe_slug):
                 )
                 ingredient_amount.save()
             return redirect('main_page')
-
-    tags = []
-    for tag_field in form['tag']:
-        tag_model = Tag.objects.get(name=tag_field.data['label'])
-        tags.append({
-            'name': tag_model.name,
-            'id_for_label': f'id_{tag_model.slug}',
-            'value': tag_field.data['value'],
-            'selected': tag_field.data['selected'],
-            'color': tag_model.color
-        })
-
+    tags = get_form_tags_with_status(form)
     ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
-
     return render(request, 'formChangeRecipe.html', {
         'form': form,
         'tags': tags,
