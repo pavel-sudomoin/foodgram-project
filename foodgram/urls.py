@@ -5,15 +5,15 @@ from django.conf.urls import handler404, handler500
 from django.conf import settings
 from django.conf.urls.static import static
 
-handler404 = "recipes.views.page_not_found"
-handler500 = "recipes.views.server_error"
+handler404 = 'recipes.views.page_not_found'
+handler500 = 'recipes.views.server_error'
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/v1/", include("api.urls")),
-    path("", include("recipes.urls")),
-    path("auth/", include("users.urls")),
-    path("auth/", include("django.contrib.auth.urls")),
+    path('admin/', admin.site.urls),
+    path('api/v1/', include('api.urls')),
+    path('', include('recipes.urls')),
+    path('auth/', include('users.urls')),
+    path('auth/', include('django.contrib.auth.urls')),
     path('about/', include('about.urls', namespace='about')),
 ]
 
