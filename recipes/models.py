@@ -11,7 +11,7 @@ class Ingredient(models.Model):
     unit = models.CharField(max_length=50)
 
     def __str__(self):
-            return self.name
+        return self.name
 
 
 class Tag(models.Model):
@@ -20,7 +20,7 @@ class Tag(models.Model):
     slug = models.SlugField(unique=True, max_length=50)
 
     def __str__(self):
-            return self.name
+        return self.name
 
 
 class Recipe(models.Model):
@@ -45,7 +45,7 @@ class Recipe(models.Model):
     pub_date = models.DateTimeField('date published', auto_now_add=True)
 
     def __str__(self):
-            return self.name
+        return self.name
 
     class Meta:
         ordering = ('-pub_date',)
