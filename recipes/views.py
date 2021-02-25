@@ -92,40 +92,43 @@ def edit_recipe(request, recipe_slug):
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
     if request.user != recipe.author:
         return redirect('main_page')
+
     form = RecipeForm(
         request.POST or None,
         files=request.FILES or None,
         instance=recipe
     )
     ingredients = get_ingredients(request.POST)
-    show_ingredients_error = False
-    if form.is_valid():
-        show_ingredients_error = not ingredients
-        if not show_ingredients_error:
-            IngredientAmount.objects.filter(recipe=recipe).delete()
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            for ingredient_name, ingredient_quantity in ingredients.items():
-                ingredient_obj = get_object_or_404(Ingredient,
-                                                   name=ingredient_name)
-                ingredient_amount = IngredientAmount(
-                    recipe=recipe,
-                    ingredient=ingredient_obj,
-                    quantity=ingredient_quantity
-                )
-                ingredient_amount.save()
-            form.save_m2m()
-            return redirect('main_page')
-    tags = get_form_tags_with_status(form)
-    ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
-    return render(request, 'formChangeRecipe.html', {
-        'form': form,
-        'tags': tags,
-        'ingredients': ingredients_for_render,
-        'show_ingredients_error': show_ingredients_error,
-        'recipe_slug': recipe_slug,
-    })
+
+    form_is_invalid = not form.is_valid()
+    ingredients_are_invalid = not (not bool(request.POST) or bool(ingredients))
+
+    if form_is_invalid or ingredients_are_invalid:
+        tags = get_form_tags_with_status(form)
+        ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
+        return render(request, 'formChangeRecipe.html', {
+            'form': form,
+            'tags': tags,
+            'ingredients': ingredients_for_render,
+            'show_ingredients_error': ingredients_are_invalid,
+            'recipe_slug': recipe_slug,
+        })
+
+    IngredientAmount.objects.filter(recipe=recipe).delete()
+    recipe = form.save(commit=False)
+    recipe.author = request.user
+    recipe.save()
+    for ingredient_name, ingredient_quantity in ingredients.items():
+        ingredient_obj = get_object_or_404(Ingredient,
+                                           name=ingredient_name)
+        ingredient_amount = IngredientAmount(
+            recipe=recipe,
+            ingredient=ingredient_obj,
+            quantity=ingredient_quantity
+        )
+        ingredient_amount.save()
+    form.save_m2m()
+    return redirect('main_page')
 
 
 @login_required
