@@ -44,11 +44,11 @@ class Recipe(models.Model):
     slug = AutoSlugField(populate_from='name', always_update=True, unique=True)
     pub_date = models.DateTimeField('date published', auto_now_add=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.name
 
 
 class IngredientAmount(models.Model):
