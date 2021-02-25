@@ -65,4 +65,7 @@ class IngredientAmount(models.Model):
     quantity = models.FloatField()
 
     class Meta:
-        unique_together = ('recipe', 'ingredient')
+        constraints = [
+            models.UniqueConstraint(fields=['recipe', 'ingredient'],
+                                    name='recipe_and_ingredient_uniq')
+        ]
