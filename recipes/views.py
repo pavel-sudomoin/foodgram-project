@@ -14,7 +14,7 @@ from .forms import RecipeForm
 from .utils import get_ingredients, create_paginator
 from .utils import get_data_recipes_list, get_form_tags_with_status
 
-user = get_user_model()
+User = get_user_model()
 
 
 def index(request):
@@ -34,7 +34,7 @@ def recipe_view(request, recipe_slug):
 
 
 def profile(request, username):
-    author = get_object_or_404(user, username=username)
+    author = get_object_or_404(User, username=username)
     data = get_data_recipes_list(
         request=request,
         recipes=author.recipes.all(),
@@ -46,7 +46,7 @@ def profile(request, username):
 
 @login_required
 def follow_index(request):
-    authors = user.objects.filter(
+    authors = User.objects.filter(
         followed_by__user=request.user).order_by('id')
     paginator, page = create_paginator(request, authors)
     return render(request, 'myFollow.html', {
