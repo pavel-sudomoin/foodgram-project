@@ -18,7 +18,7 @@ def create_paginator(request, recipes):
     paginator = Paginator(recipes, 3)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return (paginator, page)
+    return paginator, page
 
 
 def get_tags_with_status(selected_tags):
