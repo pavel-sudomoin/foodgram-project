@@ -59,30 +59,32 @@ def follow_index(request):
 def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     ingredients = get_ingredients(request.POST)
-    show_ingredients_error = False
-    if form.is_valid():
-        show_ingredients_error = not ingredients
-        if not show_ingredients_error:
-            recipe = form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            for ingredient_name, ingredient_quantity in ingredients.items():
-                ingredient_obj = get_object_or_404(Ingredient,
-                                                   name=ingredient_name)
-                ingredient_amount = IngredientAmount(
-                    recipe=recipe,
-                    ingredient=ingredient_obj,
-                    quantity=ingredient_quantity
-                )
-                ingredient_amount.save()
-            form.save_m2m()
-            return redirect('main_page')
-    tags = get_form_tags_with_status(form)
-    return render(request, 'formRecipe.html', {
-        'form': form,
-        'tags': tags,
-        'show_ingredients_error': show_ingredients_error,
-    })
+
+    form_is_invalid = not form.is_valid()
+    ingredients_are_invalid = not (not bool(request.POST) or bool(ingredients))
+
+    if form_is_invalid or ingredients_are_invalid:
+        tags = get_form_tags_with_status(form)
+        return render(request, 'formRecipe.html', {
+            'form': form,
+            'tags': tags,
+            'show_ingredients_error': ingredients_are_invalid,
+        })
+
+    recipe = form.save(commit=False)
+    recipe.author = request.user
+    recipe.save()
+    for ingredient_name, ingredient_quantity in ingredients.items():
+        ingredient_obj = get_object_or_404(Ingredient,
+                                           name=ingredient_name)
+        ingredient_amount = IngredientAmount(
+            recipe=recipe,
+            ingredient=ingredient_obj,
+            quantity=ingredient_quantity
+        )
+        ingredient_amount.save()
+    form.save_m2m()
+    return redirect('main_page')
 
 
 @login_required
