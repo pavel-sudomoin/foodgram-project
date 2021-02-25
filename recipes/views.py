@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
-import reportlab
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -14,11 +13,6 @@ from .models import Recipe, Ingredient, IngredientAmount
 from .forms import RecipeForm
 from .utils import get_ingredients, create_paginator
 from .utils import get_data_recipes_list, get_form_tags_with_status
-
-
-reportlab.rl_config.TTFSearchPath.append(
-    str(settings.BASE_DIR + settings.STATIC_URL)
-)
 
 
 def index(request):
