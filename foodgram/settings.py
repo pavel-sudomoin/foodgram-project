@@ -29,10 +29,10 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
-    "testserver",
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',
 ]
 
 
@@ -66,7 +66,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -140,12 +140,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Login
-LOGIN_URL = "/auth/login/"
-LOGIN_REDIRECT_URL = "main_page"
-LOGOUT_REDIRECT_URL = "main_page"
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = 'main_page'
+LOGOUT_REDIRECT_URL = 'main_page'
 
 # Email
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
 SITE_ID = 2
