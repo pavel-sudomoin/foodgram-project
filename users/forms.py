@@ -8,14 +8,14 @@ User = get_user_model()
 class CreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('first_name', 'username', 'email')
+        fields = ("first_name", "username", "email")
         labels = {
-            'first_name': _('Имя'),
-            'username': _('Имя пользователя'),
-            'email': _('Адрес электронной почты')
+            "first_name": _("Имя"),
+            "username": _("Имя пользователя"),
+            "email": _("Адрес электронной почты"),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'].label = 'Пароль'
-        del self.fields['password2']
+        self.fields["password1"].label = "Пароль"
+        del self.fields["password2"]

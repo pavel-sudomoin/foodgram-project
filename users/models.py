@@ -13,12 +13,9 @@ User = get_user_model()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    favorites = models.ManyToManyField(Recipe, related_name='favorited_by')
-    following = models.ManyToManyField(User, related_name='followed_by')
-    shoplist = models.ManyToManyField(
-        Recipe,
-        related_name='added_to_shoplist_by'
-    )
+    favorites = models.ManyToManyField(Recipe, related_name="favorited_by")
+    following = models.ManyToManyField(User, related_name="followed_by")
+    shoplist = models.ManyToManyField(Recipe, related_name="added_to_shoplist_by")
 
 
 @receiver(post_save, sender=User)
