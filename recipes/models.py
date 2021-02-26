@@ -24,28 +24,20 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='recipes'
-    )
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipes")
     name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='recipes/')
+    image = models.ImageField(upload_to="recipes/")
     description = models.TextField()
     ingredient = models.ManyToManyField(
-        Ingredient,
-        through='IngredientAmount',
-        related_name='recipes',
-        blank=True)
-    tag = models.ManyToManyField(
-        Tag,
-        related_name='recipes')
+        Ingredient, through="IngredientAmount", related_name="recipes", blank=True
+    )
+    tag = models.ManyToManyField(Tag, related_name="recipes")
     time = models.PositiveIntegerField()
-    slug = AutoSlugField(populate_from='name', always_update=True, unique=True)
-    pub_date = models.DateTimeField('date published', auto_now_add=True)
+    slug = AutoSlugField(populate_from="name", always_update=True, unique=True)
+    pub_date = models.DateTimeField("date published", auto_now_add=True)
 
     class Meta:
-        ordering = ('-pub_date',)
+        ordering = ("-pub_date",)
 
     def __str__(self):
         return self.name
@@ -53,19 +45,16 @@ class Recipe(models.Model):
 
 class IngredientAmount(models.Model):
     recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='ingredient_amounts'
+        Recipe, on_delete=models.CASCADE, related_name="ingredient_amounts"
     )
     ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.PROTECT,
-        related_name='ingredient_amounts'
+        Ingredient, on_delete=models.PROTECT, related_name="ingredient_amounts"
     )
     quantity = models.FloatField()
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['recipe', 'ingredient'],
-                                    name='recipe_and_ingredient_uniq')
+            models.UniqueConstraint(
+                fields=["recipe", "ingredient"], name="recipe_and_ingredient_uniq"
+            )
         ]
