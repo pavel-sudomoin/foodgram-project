@@ -10,6 +10,17 @@
 
 <pre><code>python manage.py loaddata fixtures_ingredients.json</code></pre>
 
+## Структура файла *.env* с переменными окружения
+
+Переменные окружения хранятся в файле *.env*. Вы можете изменять его и задавать собственные настройки и пароли.
+
+На данном этапе разработки проекта файл имеет следующую структуру:
+
+```
+DEBUG=True
+SECRET_KEY=YOUR_SECRET_KEY
+```
+
 ## Авторы
 
 * [Yandex.Praktikum](https://praktikum.yandex.ru/)
