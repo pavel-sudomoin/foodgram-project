@@ -4,10 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.units import cm
+from .pdf import PDFReport
 
 from .models import Recipe, Ingredient, IngredientAmount
 from .forms import RecipeForm
@@ -164,28 +161,22 @@ def shoplist_download(request):
     ingredient_amount = IngredientAmount.objects.filter(
         recipe__added_to_shoplist_by__user=request.user
     )
-    ingredients_for_output = {}
+    ingredients_for_draw = {}
     for ingredient in ingredient_amount:
         name = ingredient.ingredient.name
         unit = ingredient.ingredient.unit
         quantity = ingredient.quantity
-        if name not in ingredients_for_output:
-            ingredients_for_output[name] = {
+        if name not in ingredients_for_draw:
+            ingredients_for_draw[name] = {
                 "unit": unit,
                 "quantity": quantity,
             }
         else:
-            ingredients_for_output[name]["quantity"] += quantity
+            ingredients_for_draw[name]["quantity"] += quantity
 
-    c = canvas.Canvas(response)
-    pdfmetrics.registerFont(TTFont("FreeSans", "FreeSans.ttf"))
-    c.setFont("FreeSans", 14)
-    textobject = c.beginText(2 * cm, 29.7 * cm - 2 * cm)
-    for name, data in ingredients_for_output.items():
-        textobject.textLine(f"{name} ({data['unit']}) — {data['quantity']}")
-    c.drawText(textobject)
-    c.showPage()
-    c.save()
+    report = PDFReport(response)
+    report.draw_ingredients(response, ingredients_for_draw)
+    report.close_and_save()
 
     return response
 
