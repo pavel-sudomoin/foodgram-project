@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
-from .pdf import PDFReport
+from .generatereport import PDFReport
 
 from .models import Recipe, Ingredient, IngredientAmount
 from .forms import RecipeForm
@@ -175,7 +175,7 @@ def shoplist_download(request):
             ingredients_for_draw[name]["quantity"] += quantity
 
     report = PDFReport(response)
-    report.draw_ingredients(response, ingredients_for_draw)
+    report.draw_ingredients(ingredients_for_draw)
     report.close_and_save()
 
     return response
