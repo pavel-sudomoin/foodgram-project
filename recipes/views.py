@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -154,9 +153,6 @@ def shoplist(request):
 
 @login_required
 def shoplist_download(request):
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = 'attachment; filename="ingredients.pdf"'
-
     ingredient_amount = IngredientAmount.objects.filter(
         recipe__added_to_shoplist_by__user=request.user
     )
@@ -173,9 +169,9 @@ def shoplist_download(request):
         else:
             ingredients_for_draw[name]["quantity"] += quantity
 
-    report = PDFReport(response)
+    report = PDFReport()
     report.draw_ingredients(ingredients_for_draw)
-    report.close_and_save()
+    response = report.close_and_save()
 
     return response
 
