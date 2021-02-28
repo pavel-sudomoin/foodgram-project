@@ -79,3 +79,11 @@ def get_form_tags_with_status(form):
             }
         )
     return tags
+
+
+def _is_valid_input_data(form, ingredients):
+    if form.is_valid():
+        if bool(ingredients):
+            return True
+        form.add_error(None, "Вы не добавили ингредиентов.")
+    return False

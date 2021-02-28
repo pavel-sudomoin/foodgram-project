@@ -7,7 +7,11 @@ from .generatereport import PDFReport
 from .models import Recipe, Ingredient, IngredientAmount
 from .forms import RecipeForm
 from .utils import get_ingredients, create_paginator
-from .utils import get_data_recipes_list, get_form_tags_with_status
+from .utils import (
+    get_data_recipes_list,
+    get_form_tags_with_status,
+    _is_valid_input_data,
+)
 
 User = get_user_model()
 
@@ -49,10 +53,7 @@ def new_recipe(request):
     form = RecipeForm(request.POST or None, files=request.FILES or None)
     ingredients = get_ingredients(request.POST)
 
-    form_is_invalid = not form.is_valid()
-    ingredients_are_invalid = not (not bool(request.POST) or bool(ingredients))
-
-    if form_is_invalid or ingredients_are_invalid:
+    if not _is_valid_input_data(form, ingredients):
         tags = get_form_tags_with_status(form)
         return render(
             request,
@@ -60,7 +61,6 @@ def new_recipe(request):
             {
                 "form": form,
                 "tags": tags,
-                "show_ingredients_error": ingredients_are_invalid,
             },
         )
 
@@ -88,10 +88,7 @@ def edit_recipe(request, recipe_slug):
     )
     ingredients = get_ingredients(request.POST)
 
-    form_is_invalid = not form.is_valid()
-    ingredients_are_invalid = not (not bool(request.POST) or bool(ingredients))
-
-    if form_is_invalid or ingredients_are_invalid:
+    if not _is_valid_input_data(form, ingredients):
         tags = get_form_tags_with_status(form)
         ingredients_for_render = IngredientAmount.objects.filter(recipe=recipe)
         return render(
@@ -101,7 +98,6 @@ def edit_recipe(request, recipe_slug):
                 "form": form,
                 "tags": tags,
                 "ingredients": ingredients_for_render,
-                "show_ingredients_error": ingredients_are_invalid,
                 "recipe_slug": recipe_slug,
             },
         )
