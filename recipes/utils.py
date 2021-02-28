@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 
-from .models import Tag
+from .models import Tag, Ingredient
 
 
 def get_ingredients(data):
@@ -8,9 +8,7 @@ def get_ingredients(data):
     for key, value in data.items():
         if "nameIngredient" in key:
             ingredient_id = key.split("_")[1]
-            ingredients[value] = round(
-                float(data[f"valueIngredient_{ingredient_id}"]), 1
-            )
+            ingredients[value] = data[f"valueIngredient_{ingredient_id}"]
     return ingredients
 
 
@@ -82,8 +80,20 @@ def get_form_tags_with_status(form):
 
 
 def _is_valid_input_data(form, ingredients):
-    if form.is_valid():
-        if bool(ingredients):
-            return True
-        form.add_error(None, "Вы не добавили ингредиентов.")
-    return False
+    if not form.is_valid():
+        return False
+    if not ingredients:
+        form.add_error(None, "Вы не добавили ингредиентов")
+        return False
+    for ingredient_name, ingredient_quantity in ingredients.items():
+        if not Ingredient.objects.filter(name=ingredient_name).exists():
+            form.add_error(None, f"Ингридиент {ingredient_name} не найден в базе")
+            return False
+        try:
+            ingredients[ingredient_name] = round(float(ingredient_quantity), 1)
+        except ValueError:
+            form.add_error(
+                None, f"Неверно указано количество ингридиента {ingredient_name}"
+            )
+            return False
+    return True
