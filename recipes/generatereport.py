@@ -17,7 +17,7 @@ class PDFReport:
     def draw_ingredients(self, text):
         textobject = self.canvas.beginText(*self.PAGE_SIZE)
         for name, data in text.items():
-            textobject.textLine(f"{name} ({data['unit']}) — {data['quantity']}")
+            textobject.textLine(f"{name} ({data['unit']}) - {data['quantity']}")
         self.canvas.drawText(textobject)
 
     def close_and_save(self):
