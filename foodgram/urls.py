@@ -5,8 +5,8 @@ from django.conf.urls import handler404, handler500
 from django.conf import settings
 from django.conf.urls.static import static
 
-handler404 = "recipes.views.page_not_found"
-handler500 = "recipes.views.server_error"
+handler404 = "recipes.views.page_not_found"  # noqa: F811
+handler500 = "recipes.views.server_error"  # noqa: F811
 
 urlpatterns = [
     path("admin/", admin.site.urls),

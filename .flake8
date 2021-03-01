@@ -1,0 +1,4 @@
+[flake8]
+exclude = tests, migrations, settings*, venv
+ignore = F401,W503
+max-line-length = 88
