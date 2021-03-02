@@ -4,7 +4,7 @@
 
 ## Ссылка на проект
 
-Приложение доступно по адресу http://foodgram-project-sudomoin.tk/
+Приложение доступно по адресу https://foodgram-project-sudomoin.tk/
 
 ## Описание проекта
 
@@ -49,6 +49,20 @@ POSTGRES_PASSWORD=postgres # пароль для подключения к БД 
 ### Остановка контейнеров
 
 <pre><code>sudo docker-compose down</code></pre>
+
+### Получение и настройка SSL-сертификата
+
+Для настройки доступа по протоколу https использовался следующий гайд: https://github.com/wmnnd/nginx-certbot
+
+Для выпуска сертификата необходимо:
+
+1. Отредактировать файл *nginx.conf*, указав имя своего сайта вместо *foodgram-project-sudomoin.tk*
+
+2. Отредактировать файл *init-letsencrypt.sh*, указав имя своего сайта вместо *example.org* и свой email
+
+3. Запустить скрипт следующими командами:
+   <pre><code>chmod +x init-letsencrypt.sh</code></pre>
+   <pre><code>sudo ./init-letsencrypt.sh</code></pre>
 
 ## Работа с проектом
 
