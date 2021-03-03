@@ -1,7 +1,7 @@
-from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
 from django.http import HttpResponse
 
@@ -9,7 +9,7 @@ from django.http import HttpResponse
 class PDFReport:
     FONT_NAME = ("FreeSans", "FreeSans.ttf")
     FONT_SIZE = 14
-    PAGE_SIZE = (2 * cm, 29.7 * cm - 2 * cm)
+    SPACE_AFTER = 14
     DEFAULT_CONTENT_TYPE = "application/pdf"
     DEFAULT_FILE_NAME = "ingredients.pdf"
 
@@ -21,16 +21,23 @@ class PDFReport:
             "Content-Disposition"
         ] = f"attachment; filename={self.DEFAULT_FILE_NAME}"
 
-        self.canvas = canvas.Canvas(self.response)
-        self.canvas.setFont(self.FONT_NAME[0], self.FONT_SIZE)
+        self.doc = SimpleDocTemplate(self.response)
 
-    def draw_ingredients(self, text):
-        textobject = self.canvas.beginText(*self.PAGE_SIZE)
-        for name, data in text.items():
-            textobject.textLine(f"{name} ({data['unit']}) - {data['quantity']}")
-        self.canvas.drawText(textobject)
+        self.style = ParagraphStyle(
+            "CustomNormal",
+            fontName=self.FONT_NAME[0],
+            fontSize=self.FONT_SIZE,
+            parent=getSampleStyleSheet()["Normal"],
+            spaceAfter=self.SPACE_AFTER,
+        )
+
+        self.content = []
+
+    def draw_ingredients(self, ingredients):
+        for name, data in ingredients.items():
+            p = Paragraph(f"{name} ({data['unit']}) - {data['quantity']}", self.style)
+            self.content.append(p)
 
     def close_and_save(self):
-        self.canvas.showPage()
-        self.canvas.save()
+        self.doc.build(self.content)
         return self.response
