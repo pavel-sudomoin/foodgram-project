@@ -13,7 +13,7 @@ def get_ingredients(data):
 
 
 def create_paginator(request, recipes):
-    paginator = Paginator(recipes, 3)
+    paginator = Paginator(recipes, 6)
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
     return paginator, page
