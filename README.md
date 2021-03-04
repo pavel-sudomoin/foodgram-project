@@ -36,6 +36,11 @@ DB_HOST=db # название сервиса (контейнера)
 DB_PORT=5432 # порт для подключения к БД
 POSTGRES_USER=postgres # логин для подключения к базе данных
 POSTGRES_PASSWORD=postgres # пароль для подключения к БД (рекомендуется установить свой)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST_USER=*your_account@gmail.com* # ваша почта на gmail.com
+EMAIL_HOST_PASSWORD=*your account’s password* # ваш пароль от почты
 ```
 
 ### Сборка и запуск контейнеров
