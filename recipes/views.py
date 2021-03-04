@@ -80,7 +80,7 @@ def new_recipe(request):
 @login_required
 def edit_recipe(request, recipe_slug):
     recipe = get_object_or_404(Recipe, slug=recipe_slug)
-    if request.user != recipe.author:
+    if request.user != recipe.author and not request.user.is_superuser:
         return redirect("main_page")
 
     form = RecipeForm(
@@ -104,7 +104,6 @@ def edit_recipe(request, recipe_slug):
 
     IngredientAmount.objects.filter(recipe=recipe).delete()
     recipe = form.save(commit=False)
-    recipe.author = request.user
     recipe.save()
     for ingredient_name, ingredient_quantity in ingredients.items():
         ingredient_obj = get_object_or_404(Ingredient, name=ingredient_name)
