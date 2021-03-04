@@ -9,7 +9,7 @@ class IngredientAdmin(admin.ModelAdmin):
         "name",
         "unit",
     )
-    list_filter = ("name",)
+    search_fields = ("name",)
     empty_value_display = "-пусто-"
 
 
@@ -19,6 +19,8 @@ class TagAdmin(admin.ModelAdmin):
         "name",
         "color",
     )
+    search_fields = ("name",)
+    empty_value_display = "-пусто-"
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -26,21 +28,38 @@ class RecipeAdmin(admin.ModelAdmin):
         "pk",
         "name",
         "author",
+        "selected_tags",
     )
     list_filter = (
         "author",
-        "name",
         "tag",
+    )
+    search_fields = (
+        "name",
+        "tag__name",
+        "author__username",
     )
     empty_value_display = "-пусто-"
     readonly_fields = ("popularity",)
+
+    def selected_tags(self, obj):
+        return "; ".join((tag.name for tag in obj.tag.all()))
 
     def popularity(self, obj):
         return f"{obj.favorited_by.count()} пользователей добавили в избранное"
 
 
 class IngredientAmountAdmin(admin.ModelAdmin):
-    list_display = ("pk", "recipe", "ingredient", "quantity")
+    list_display = (
+        "pk",
+        "recipe",
+        "ingredient",
+        "quantity",
+    )
+    search_fields = (
+        "recipe__name",
+        "ingredient__name",
+    )
     empty_value_display = "-пусто-"
 
 
