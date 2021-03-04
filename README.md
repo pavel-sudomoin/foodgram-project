@@ -36,10 +36,10 @@ DB_HOST=db # название сервиса (контейнера)
 DB_PORT=5432 # порт для подключения к БД
 POSTGRES_USER=postgres # логин для подключения к базе данных
 POSTGRES_PASSWORD=postgres # пароль для подключения к БД (рекомендуется установить свой)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_USE_TLS=True
-EMAIL_PORT=587
-EMAIL_HOST_USER=*your_account@gmail.com* # ваша почта на gmail.com
+EMAIL_HOST=smtp.gmail.com # ссылка на smtp сервер
+EMAIL_USE_TLS=True # нужно ли использовать протокол TLS
+EMAIL_PORT=587 # 587 порт используется если активирован протокол TLS
+EMAIL_HOST_USER=*your_account@gmail.com* # ваша почта
 EMAIL_HOST_PASSWORD=*your account’s password* # ваш пароль от почты
 ```
 
@@ -68,6 +68,12 @@ EMAIL_HOST_PASSWORD=*your account’s password* # ваш пароль от по�
 3. Запустить скрипт следующими командами:
    <pre><code>chmod +x init-letsencrypt.sh</code></pre>
    <pre><code>sudo ./init-letsencrypt.sh</code></pre>
+
+### Настройка отправки сообщений на почту
+
+В данной работе для отправки сообщений на почту пользователям использован SMTP сервер от Google.
+
+Для настройки использовался следующий гайд: https://medium.com/@_christopher/how-to-send-emails-with-python-django-through-google-smtp-server-for-free-22ea6ea0fb8e
 
 ## Работа с проектом
 
