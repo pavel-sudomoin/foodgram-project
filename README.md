@@ -4,7 +4,7 @@
 
 ## Ссылка на проект
 
-Приложение доступно по адресу https://foodgram-project-sudomoin.tk/
+Приложение доступно по адресу <s>https://foodgram-project-sudomoin.tk/</s>
 
 ## Описание проекта
 
